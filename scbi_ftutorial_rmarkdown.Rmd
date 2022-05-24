@@ -1,0 +1,302 @@
+---
+author: "Fernando Moreno Jabato"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    fig_width: 12
+---
+
+# **0. Introducción**
+Este documento está orientado a enseñar a renderizar documentos con RMarkdown sin, necesariamente, saber R.
+
+El documento se ha creado para utilizarlo como material de apoyo en un workshop presencial, por lo que, si lo estás leyendo sin la explicación, es posible que haya cosas que no entiendas.
+
+# **1. ¿Qué es RMarkdown?**
+RMarkdown es una librería de R que es capaz de renderizar documentos escritos en el lenguaje de marcado ligero Markdown.
+
+Dicho en cristiano, es algo que te permite crear documentos PDF o HTML (principalmente) desde una llamada en el lenguaje R.
+
+Las principales ventajas de su uso son:
+
+  + **Desarrollo rápido:** la sintáxis de Markdown es rápida de aprender y de escribir. Por lo que desarrollarás documentos ágilmente.
+  + **Incrustar resultados de R:** puedes incluir tablas y gráficas generadas con datos que ya hayas cargado en R.
+  + **Automatización:** puedes automatizar la generación de informes. Incluso generar secciones de forma dinámica.
+
+En este workshop no vamos a entrar ni a explicar como programar en R, ni Markdown en profundidad. Vamos a explicar las principales acciones que vas a utilizar y te invitamos a que indagues en los tutoriales, documentación y _cheatsheets_ que hay disponibles en la comunidad.
+
+# **2. Primeros pasos**
+En esta sección vamos a tratar los conceptos más básicos para hacer tu primer documento renderizado con RMarkdown.
+
+De esta sección debes salir (o si te la quieres saltar, deberías saber):
+
+  + Cómo renderizar.
+  + Negrita, cursiva, secciones y listas en Markdown.
+  + Cómo incrustar código y configurar tus chunks.
+
+Ataca a las secciones en las que necesites iniciarte/profundizar.
+
+## **Renderizar**
+El acto de _renderizar_ consiste en generar algo visual a partir de unas instrucciones. Eso es lo que hacemos al pasarle un documento como éste (.Rmd) al _engine_ de RMarkdown.
+
+Las instrucciones que les damos son variadas, entre ellas está el texto en Markdown, los trozos de código (chunks) y la cabecera del documento, que es la parte que vamos a abordar aquí.
+
+Al principio de cada documento RMarkdown incluimos una cabecera con información básica para el motor de renderiado. Una cabecer habitual sería la siguiente:
+```
+---
+author: "Pepito los palotes"
+output: html_document
+---
+```
+Si observas, verás que abrimos y cerramos la cabecera con un triple guión y, dentro, indicamos campos con la forma `<clave>: <valor>`
+
+En este caso, identificamos dos parámetros que son:
+
+  + **author:** el nombre del autor del documento.
+  + **output:** el formato de documento a generar. Los más habituales son `html_document` y `pdf_document` aunque hay más, como el Word y formato diapositivas.
+
+Esta cabecera se puede complicar más. De hecho, si entras al documento original que se ha utilizado para generar este documento, verás esto:
+```
+---
+author: "Fernando Moreno Jabato"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    fig_width: 12
+---
+```
+
+Aquí he añadido un conjunto de parámetros que, personalmente, me gusta utilizar como:
+
+  + **toc:** al poner esto a TRUE, le dices a markdown que te genere un _Table of Contents_ (índice).
+  + **toc_float:** al poner esto a TRUE, le indicas que quieres que el índice se mueva cuando hagas scroll en la página (sólo en HTML).
+  + **df_print:** al indicarle el valor "paged" fuerzas a pintar los dataframes (tablas) en formato paginado, en vez de incrustarte infiniiiiiiiiitas páginas con toda la tabla...
+  + **fig_width:** aquí, gustos colores, pero yo fijo el tamaño de ancho de las figuras para que no se desmadres.
+
+Mi recomendación personal es que uses, siempre que sea posible, la renderización a HTML, ya que te permite incluir elementos interactivos y pesa prácticamente lo mismo.
+
+Según tu necesidad, modifica tu cabecera para crear el documento que necesites. Encontrarás múltiples cheatsheets con ayuda sobre esto.
+
+A parte de la cabecera, necesitarás dar la orden de renderizar. Si acostumbras a usar _RStudio_, verás un botón en la parte superior que pone `knitr`. 
+
+Mi recomendación es que uses el comando de R (que es el que llama RStudio) directamente en tu código. También, para que te sea más fácil automatizar este proceso en tus scripts. El comando es 
+
+```
+rmarkdow::render(<ficheroRmd>)
+```
+
+Tiene múltiples parámetros más este comando, aquí sólo hemos especificado el parámetro de entrada. Personalmente te recomiendo que sepas de la existencia de estos otros dos parámetros:
+
+  1. **output_file:** aquí puedes especificar el nombre del fichero generado. Si no lo especificas, será el mismo nombre que la plantilla (.Rmd) pero con la extensión que corresponda a HTML o PDF. 
+  2. **intermediates_dir:** aquí puedes indicar el directorio donde almacenar los temporales del proceso de renderizado.
+
+Ambos son especialmente útiles cuando utilizas una misma plantilla para generar diferentes informes, por ejemplo, un informe por muestra. La plantilla se llama igual, así que, si no especificas un fichero de salida (1), cada nuevo informe pisará al anterior aunque contengan información diferente.
+
+De igual modo, los ficheros temporales se basan en el nombre de la plantilla, por lo que, si paralelizas la generación de N informes para N muestras, los ficheros temporales se mezclarán y _la vas a liar parda_.
+
+Si quieres ver una llamada básica, tienes el ejemplo en el fichero `scbi_ftutorial_rmarkdown.R` que renderiza este documento.
+
+
+## **Comandos más básicos de Markdown**
+Markdown va a ser el principal contenido de tus documentos, si es que no te dedicas a pegar figuras y ya. Por eso debes aprender los comandos de marcado más básicos.
+
+Si en algún momento no te queda claro cómo se hace cada cosa, puedes ir a este apartado en el documento original (.Rmd) y ver cómo se aplica cada concepto.
+
+Principalmente, si quieres usar la **negrita**, la _cursiva_, ~~tachado~~ o ~subíndice~ tienes que rodear la palabra/frase a la que deseas dar estilo con:
+  
+  - **Negrita:** dos asteriscos (\*) 
+  - **Cursiva:** un guión bajo (\_)
+  - **Tachado:** dos virgulillas (\~)
+  - **Subíndice:** una virgulilla (\~)
+
+Hay otra forma de hacer el *cursiva* y el ***cursiva y negrita*** con asterisco simple y triple respectivamente. Pero es lioso y, dependiendo de la situación, puede ser una mala práctica.
+
+Otra cosa que vas a hacer mucho,es crear listas. Esto es tan simple como, al principio de cada _entrada_ de la lista utilices un símbolo más (+) o un guión (-) si quieres una lista sin números.
+
+Si quieres una lista ordenada (con números), sólo tienes que ir poniendo los números seguidos de un punto (.) en vez del más o el guión.
+
+**IMPORTANTE:** para que RMarkdown pille bien la lista, tienes que dejar una línea en blanco antes del primer elemento de la lista. Así mismo, debes dejar un espacio entre el indicado de cada elemento (+/-/<número>) y el texto de esa entrada.
+
+Si tienes dudas:
+
+  + La primera lista de esta sección está hecha con guiones (-).
+  + Esta lista está hecha con síbolo de suma (+).
+  + Y la última lista del apartado anterior es numérica (aunque no hacía falta).
+
+## **Chunks**
+La principal gracia de estos documentos es incrustarles código. Para ello usamos los `chunks`.
+
+Hay dos tipos de chunks:
+
+  + **Inline:** o aquellos que se renderizan directamente en medio de una línea de texto.
+  + **Bloque:** aquellas que conforman un bloque de código que se codifica y renderiza a parte del texto Markdown
+
+El primero se crea englobando el código entre un único carcter de comilla invertida (\`) y el segundo se hace con tres de éstas (y algo más...).
+
+Ambos son muy útiles tanto para la parte estética, como para la parte funcional. 
+
+Me explico. Vamos a empezar haciendo `chunks` que no ejecutan código. Es decir, sólo nos va a servir para algo `visual`. De hecho, la palabra _visual_ y _chunk_ están en estilo grisáceo porque los he incluido como dos _chunks inline_ que no ejecutan ningún código.
+
+Del mismo modo, puedo incluir una entrada en bloque que no ejecuta ningún código, como he hecho antes para las cabeceras de los ficheros Rmd:
+
+```
+Esto es un chunk en bloque que no ejecuta nada
+```
+
+Si no lo has hecho hasta ahora, **es el momento** de que entres en el fichero original de Rmd que genera este documento para que empieces a ver qué he hecho.
+
+## **Configurando un chunk**
+Si sólo quieres la parte visual, no necesitas añadir ninguna configuación y tus chunks tendrán este aspecto:
+```
+\```
+Esto es un chunk de bloque que no ejecuta código. 
+
+Pero sin el slash invertido (\) que si no, no te lo puedo pintar ;P
+\```
+```
+
+Si vamos a ejecutar el código de su interior, tenemos que añadirle configuración. Esto se consigue incluyendo, entre llaves ({}) la información de configuración.
+
+Estas llaves se posicionan justo al principio del chunk, colindante a las comillas simples.
+
+Lo primero que se indica es el lenguaje en el que están codificadas las instrucciones. Lo más habitual, ya que esto es RMarkdown, es que lo ejecutes en `R (r)`, pero también puedes usar `Python (python)` o `Ruby (ruby)` por dar unos ejemplos.
+
+De esta manera, un chunk con código normalmente tendrá este aspecto
+
+Chunk inline: `r "Si vas al documento Rmd original, verás que esto lo ha escrito R"`
+
+```
+Chunk en bloque:
+\```{r}
+codigo
+\```
+
+```
+
+**Nota:** verás que no te he puesto forma visual de un chunk inline. esto se debe a que el render los pilla incluso si intentas _falsearlos_. Lo siento, vas a tener que entrar en el documento Rmd...aunque ya deberías haberlo hecho.
+
+Los parámetros más importantes que te recomiendo utilizar son:
+
+  + **label:** el nombre del chunk. Muy útil ya que, al renderizar, te va pintando qué chunkcs se han ejecutado ya y es más fácil identificar en cuál ha dado error.
+  + **echo:** por defecto a TRUE. Si lo pones a FALSE, no mostrará el código, sólo los resultados de ejecutar el código.
+  + **eval:** pro defecto a TRUE. Si lo pones a FALSE, no ejecutará ese bloque de código.
+
+Mi experiencia me dice que, el 99% de las veces vas a poner tus chunks de bloque con `echo` a FALSE. 
+
+Y lo gracioso del `eval` es que puedes asignarle el valor de forma dinámica usando una variable de R. De esa manera puedes no renderizar los primeros chunks de un informe cuando aún lo estás desarrollando. Eso es especialmente útil cuando tienes informes que son costosos de generar y estás desarrollandolo y lo ejecutas cada 10 segundos.
+
+## **Chunk con código ejecutable**
+Ahora si, vamos a ejecutar código de verdad. 
+
+Un ejemplo tonto de R es cargar un set de datos que ya exista y vamos a pintar una gráfica.
+
+Empezamos cargando los datos del dataset público Iris y mostramos un resumen de éste:
+```{r loadIris, echo=TRUE}
+library(datasets)
+data(iris)
+summary(iris)
+```
+
+He dejado el código visible, pero si sólo te interesa el resumen, podrías poner el echo a false y quedaría _más elegante_.
+
+Ahora, vamos a pintar una gráfica con estos datos:
+```{r plotIris, echo=TRUE}
+plot(iris)
+```
+
+Como has podido ver, fácilmente he incluido una gráfica en el documento sin necesidad de exportarla a un PNG y luego pegarla a mano.
+
+Llegados a este punto, _the sky is the limit_. Pero os voy a explicar alguna cosilla más en las secciones siguientes.
+
+
+# **3. Haciendo cosas más chulas**
+Vale, ahora vamos a hacer alguna cosilla que, no necesariamente es más complicado, pero queda muy bien en estos informes.
+
+## **Imágenes (también interactivas)**
+La primera de ellas es que, si renderizas a HTML, puedes incluir elementos dinámicos. De hecho, puedes programar directamente con elementos HTML, pero si estás haciendo este seminario, no deberías meterte en estos _fregaos_.
+
+El caso es que hay varias librerías que ya incluyen elementos dinámicos. Por ejemplo, 
+
+Por ejemplo, el paquete `rAmCharts` te permite pintar fácilmente este histograma (**prueba a pasar el ratón por encima**):
+```{r dynHist, echo = TRUE}
+rAmCharts::amHist(iris$Petal.Length)
+```
+
+Podemos hacer pijadas como esta visión 3D usando el paquete `plotly` (**juega a arrastrar el objeto**):
+```{r plotlyVolcano, echo = TRUE}
+plotly::plot_ly(z = volcano, type = "surface")
+```
+
+O cosas chulas como esta red gestionada con `visNetwork` (**prueba a mover los nodos**):
+```{r visNetwork, echo = TRUE}
+# Me invento la red
+nodes <- data.frame(id = 1:15, label = paste("Id", 1:15),
+                    group=sample(LETTERS[1:3], 15, replace = TRUE))
+edges <- data.frame(from = trunc(runif(15)*(15-1))+1,to = trunc(runif(15)*(15-1))+1)
+# La pinto
+visNetwork::visNetwork(nodes,edges)
+```
+
+Esto son ejemplos. La comunidad de R es lo suficientemente grande como para que haya una solución a lo que tu estás buscando. 
+
+**Recomendación:** si no encuentras algo que te convenza, prueba a hacerte tu gráfico usando `ggplot` y pásaselo a la función `ggplotly(<plot>)`. Puede que te sorprendas.
+
+## **Tablas _como dios manda_**
+Una forma bonita de dejar las tablas en HTML, es usando el paquete `DT`. Aquí os dejo un código que permite aplciar filtros dinámicos en las columnas e incluso mostrar unos botones para descargar los datos en CSV o Excel. Porque si, esta es otra forma de pasarle la tabla de resultados a tus usuarios (;P)
+
+```{r tablesDT, echo = TRUE}
+DT::datatable(iris, filter = 'top', rownames = FALSE, extensions = c('Buttons','ColReorder'),
+              options = list(
+                colReorder = TRUE,
+                dom = 'lftBip',
+                buttons = c('copy', 'csv', 'excel')
+              ))
+
+```
+
+Habrás notado que puedes hasta mover la distribución de columnas.
+
+# **4. Buenas costumbres**
+Entrar en el mundo de hacerte tus propias plantillas tiene una virtud y un defecto.
+  
+  + La virtud es que puedes hacer lo que quieras y eso es maravilloso.
+  + El defecto es que puedes hacer lo que quieras y eso es peligroso.
+
+Si empiezas a desarrollar código, mi recomendación es que seas bueno poniendo todos y eleigiendo los nombres de los chunks y las variables.
+
+Y recuerda la filosofía **KISSS _(Keep It Simple Stupid!)_** 
+
+
+```{r dynamicSection, echo=FALSE}
+# Funcion de interes
+render <- function(text){paste(knitr::knit(text = paste(text,collapse = "\n")),collapse = "\n")}
+chunks <- function(code, options = ""){paste(paste("```{r ",options,"}",sep = ""),code,"```",sep="\n")}
+
+out <- "" # Texto de seccion vacio
+
+# Incluimos el texto de cabecera de seccion y algo mas
+header <- "
+# **5. Aquí hay dragones**
+No te asustes si entras en el fichero original (.Rmd) y descubres que esta sección entera, está generada de forma dinámica con código de R.
+
+De hecho, este chunk está generado dinámicamente también
+"
+chunk_code <- "message(paste0('1+1 son: ',1+1))"
+body2 <- "Esto es sólo para darte ideas. Pero cuidado que _aquí hay dragones_"
+
+
+# Metemos el contenido en la variable que se va a renderizar (out)
+out <- paste(header,
+            chunks(chunk_code, "echo=TRUE"),
+            body2,
+            sep="\n")
+
+```
+
+`r paste(knitr::knit(text = paste(out,collapse = "\n")),collapse = "\n")`
+
+
+
