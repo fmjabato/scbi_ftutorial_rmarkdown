@@ -1,0 +1,9 @@
+# **4. Divide y vencerás**
+Es probable que identifiques secciones que se repiten en varios informes de plantillas diferentes. Si esto es así, tienes dos opciones:
+
+  1. Repetir el texto tantas veces como plantillas tengas.
+  2. Crear un markdow (.Rmd) con esa sección e importarla en cada plantilla.
+
+Esta segunda opción es muy interesante porque, si modificas algo de esa sección, sólo tienes que hacerlo en un documento. 
+
+Para hacerlo, sólo tienes que usar la función `knitr::knit_expand`y pasarle la ruta al fichero Rmd. Luego sólo tienes que expandirlo con `knitr::knit` tal como se ha hecho en esta misma sección, míralo en el documento original (;P).
